@@ -10,7 +10,7 @@
 /* Split-screen login built around the supplied artwork. */
 :root{--font-ui:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-reader:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--radius-sm:5px;--radius:8px;--radius-lg:10px}
 .login{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;padding:0;background:var(--bg)}
-.login-visual{position:relative;min-height:100dvh;background:#160607 url('/login-art.png') center/cover no-repeat;display:flex;align-items:flex-start;padding:38px 48px}
+.login-visual{position:relative;min-height:100dvh;background:#160607 url('/login-art.png') center/100% 100% no-repeat;display:flex;align-items:flex-start;padding:38px 48px}
 .login-brand{color:#fff;font-size:25px;font-weight:800;letter-spacing:-1.4px;line-height:1}
 .login-brand span{color:#ff3b43}
 .login-credit{position:absolute;left:48px;bottom:32px;color:#ffffffa8;font-size:11px;font-weight:400;letter-spacing:.14em}
