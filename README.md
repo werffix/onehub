@@ -43,10 +43,13 @@ npm run dev
 
 Vite запускается на `http://127.0.0.1:5173` и проксирует `/api` и `/uploads` на Node `127.0.0.1:3000`. Админ входит по `ADMIN_KEY`. Демо-данные добавляются только в development: `npm run seed`.
 
-Сборка и запуск production:
+Сборка и запуск production (dev-зависимости нужны на этапе компиляции TypeScript/Vite):
 
 ```sh
+npm ci --include=dev
 npm run build
+# Необязательно на сервере после сборки:
+npm prune --omit=dev
 NODE_ENV=production node server.js
 ```
 
