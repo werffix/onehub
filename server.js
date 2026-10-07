@@ -85,4 +85,4 @@ if(route.startsWith('/api/'))return fail(res,404,'Не найдено.');
 const file=route==='/'?'index.html':path.basename(route);const allowed=['index.html','app.js','style.css','robots.txt'];if(!allowed.includes(file))return fail(res,404,'Не найдено.');const fp=path.join(__dirname,'public',file);return send(res,200,fs.readFileSync(fp),{'content-type':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.txt')?'text/plain; charset=utf-8':'text/html; charset=utf-8','x-robots-tag':'noindex, nofollow'});
 }catch(e){console.error('request error:',e.message);return fail(res,500,PROD?'Внутренняя ошибка.':'Ошибка запроса: '+e.message)}
 });
-server.listen(PORT,()=>console.log(`0ne//hub запущен: http://localhost:${PORT}`));
+server.listen(PORT, '127.0.0.1', () => console.log(`0ne//hub запущен: http://127.0.0.1:${PORT}`));
