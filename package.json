@@ -1,0 +1,8 @@
+{
+  "name": "0ne-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Закрытая платформа статей 0ne//hub",
+  "scripts": {"dev": "node server.js", "start": "NODE_ENV=production node server.js", "seed": "NODE_ENV=development node server.js --seed", "test": "node --test"},
+  "engines": {"node": ">=20"}
+}
