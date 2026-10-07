@@ -83,3 +83,58 @@ html[data-theme="light"] .article-cover{background:linear-gradient(135deg,#f8e8e
 html[data-theme="light"] .article-cover.c2{background:linear-gradient(135deg,#ededee,#e2e2e4);color:#444449}
 html[data-theme="light"] .article-cover.c3{background:linear-gradient(135deg,#f8e8e9,#f1d7d9);color:#a9232a}
 @media(max-width:700px){.login-shell{grid-template-columns:1fr}.login-art{min-height:35vh;padding:25px}.login-form-wrap{min-height:65vh}.login-theme-toggle{top:14px;right:15px}.login-form{padding:45px 0 15px}}
+
+/* Knowledge base navigation, account menu and expanded article editor */
+.main{padding-top:24px}
+.topbar{min-height:54px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.account-wrap{position:relative;z-index:8}
+.account-trigger{display:flex;align-items:center;gap:9px;padding:4px 7px 4px 4px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text)}
+.account-trigger .avatar{width:36px;height:36px}
+.account-arrow{display:grid;place-items:center;color:var(--secondary);padding-right:3px}
+.account-menu{position:absolute;right:0;top:calc(100% + 9px);min-width:180px;display:flex;flex-direction:column;gap:7px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+.account-menu[hidden]{display:none}
+.theme-pill,.account-logout{width:100%;display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:999px;background:var(--surface-hover);color:var(--text);font-size:12px;text-align:left}
+.account-logout{border-radius:10px;color:var(--red)}
+.welcome-home{min-height:calc(100vh - 160px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;max-width:760px;margin:0 auto;padding:40px 20px 100px}
+.welcome-home .eyebrow{color:var(--accent)}
+.welcome-home h1{margin:8px 0;font-size:clamp(34px,6vw,64px);line-height:1.08;letter-spacing:-.055em}
+.welcome-home p{margin:8px 0 28px;color:var(--secondary);font-size:16px}
+.welcome-home .primary{padding:14px 18px}
+.home-category-link{margin-top:12px}
+.header-actions{display:flex;gap:9px;align-items:center}
+.category-filter{padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)}
+.category-row{display:flex;justify-content:space-between;align-items:center;padding:15px 3px;border-bottom:1px solid var(--border)}
+.category-row:last-child{border:0}
+.category-row small{display:block;margin-top:4px;color:var(--secondary);font-size:11px}
+.story-layout{max-width:950px;margin:0 auto}
+.story-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.story-layout .story-card{padding:clamp(24px,5vw,56px)}
+.story-content img{max-width:100%;height:auto;object-fit:contain;cursor:grab}
+.story-content .knowledge-block{margin:22px 0;padding:20px 22px;border:1px solid var(--border);border-radius:14px;background:var(--surface-hover);font-family:var(--font)}
+.knowledge-block p{margin:0 0 14px;font-weight:650}
+.knowledge-block a{display:inline-flex;padding:10px 14px;border-radius:9px;background:var(--accent);color:white;font-size:12px;font-weight:700}
+.mac-code{margin:18px 0;overflow:hidden;border:1px solid #38383e;border-radius:12px;background:#171719;color:#f4f4f5;font:13px ui-monospace,SFMono-Regular,Menlo,monospace}
+.mac-code-bar{height:36px;display:flex;align-items:center;gap:6px;padding:0 11px;background:#242427}
+.mac-code-bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.mac-code-bar i:nth-child(2){background:#febc2e}.mac-code-bar i:nth-child(3){background:#28c840}
+.mac-code-bar button{margin-left:auto;padding:5px 9px;border-radius:6px;background:#38383e;color:#eee;font-size:10px}
+.mac-code pre{margin:0;padding:17px;overflow:auto;white-space:pre-wrap;tab-size:2}
+.editor-body .mac-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5}
+.editor-body .mac-code pre{min-height:65px}
+.checkbox-row{display:flex;align-items:center;gap:9px;margin:10px 0 15px;color:var(--text);font-size:12px}
+.checkbox-row input{accent-color:var(--accent)}
+/* Dialog surfaces remain white in either theme; full editor leaves the sidebar visible. */
+.modal{background:#fff;color:#1d1d1f}
+.modal .field label{color:#666}
+.modal .field input,.modal .field textarea,.modal .field select{background:#fff;color:#1d1d1f;border-color:#dedee1}
+.modal .editor-body{background:#fff;color:#1d1d1f;border-color:#dedee1}
+.modal .editor-toolbar{background:#f3f3f5;border-color:#dedee1}
+.modal .editor-toolbar button,.modal .editor-toolbar select{background:#fff;color:#1d1d1f;border-color:#dedee1}
+.modal.large{width:auto;max-width:none;max-height:none;height:100%;border-radius:0;padding:24px clamp(22px,4vw,56px);overflow:auto}
+.overlay:has(.modal.large){inset:0 0 0 248px;padding:0;display:block;border-left:1px solid var(--border);background:var(--bg);backdrop-filter:none}
+.overlay:has(.modal.large) .modal.large{height:100vh}
+.login-art::after{content:none}
+.login-art::before{content:"";inset:0;background:linear-gradient(180deg,#07070822,#07070828 56%,#07070845)}
+@media(max-width:940px){.overlay:has(.modal.large){left:0}.modal.large{padding:20px}.main{padding:18px 24px 60px}}
+@media(max-width:600px){.topbar{margin-bottom:15px}.header-actions{width:100%;flex-wrap:wrap}.welcome-home{min-height:calc(100vh - 130px);padding:25px 5px 70px}.welcome-home h1{font-size:38px}.story-actions{gap:8px}.story-layout .story-card{padding:22px}.category-filter{flex:1;min-width:150px}.modal.large{padding:16px}.account-menu{right:0}}
+.modal .detail-item,.modal .key-box{background:#f6f6f7;color:#1d1d1f}
+@media(max-width:940px){.overlay:has(.modal.large){left:70px}#app:has(.overlay .modal.large) .sidebar{width:70px;transform:translateX(0);padding:20px 8px}#app:has(.overlay .modal.large) .sidebar .brand{justify-content:center;padding:0;margin-bottom:28px;font-size:0}#app:has(.overlay .modal.large) .sidebar .brand::after{content:'oh';font-size:17px;letter-spacing:-.5px}#app:has(.overlay .modal.large) .sidebar .menu-label{display:none}#app:has(.overlay .modal.large) .sidebar .menu-item{justify-content:center;padding:0;font-size:0}#app:has(.overlay .modal.large) .sidebar .menu-item svg{width:19px;height:19px}}
