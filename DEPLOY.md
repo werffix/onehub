@@ -44,6 +44,14 @@ sudo install -o root -g root -m 600 /dev/null /etc/0ne-hub.env
 sudoedit /etc/0ne-hub.env
 ```
 
+Если вы уже настроили `/opt/onehub/.env`, установите его в путь, который указан в systemd unit:
+
+```sh
+sudo install -o root -g root -m 600 /opt/onehub/.env /etc/0ne-hub.env
+```
+
+Unit-файл читает `/etc/0ne-hub.env`, а не `.env` из папки проекта.
+
 Вставьте туда сгенерированные значения, заменив домен здесь и далее на свой:
 
 ```dotenv
