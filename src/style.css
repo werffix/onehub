@@ -22,3 +22,10 @@
 .login-panel .primary{border-radius:5px;padding:14px 16px}
 .category-card,.search,.article-content img,.article-content pre,.copy-link,.primary,.account-menu,.account-menu button,.admin-nav button,.category-form input,.properties input,.properties textarea,.properties select,.editor-head>button,.editor-toolbar button,.tool-upload,.editor-toolbar select,.admin-row button,.admin-row a,.admin-tabs button,.article-filters select,.editor-toolbar input[type=number],.editor-toolbar input[type=color],.user-details,.user-details>button,.upload-placeholder{border-radius:var(--radius-sm)}
 @media(max-width:700px){.login{grid-template-columns:1fr;grid-template-rows:38dvh 1fr}.login-visual{height:38dvh;min-height:38dvh;padding:25px 24px}.login-brand{font-size:22px}.login-credit{left:24px;bottom:18px}.login-form-side{min-height:62dvh;padding:36px 24px;align-items:start}.login-panel{width:min(430px,100%);margin:auto 0}.login-panel h1{font-size:29px}}
+.admin-shell{min-height:calc(100dvh - 68px);grid-template-columns:240px minmax(0,1fr);align-items:stretch;background:var(--bg)}
+.admin-nav{min-height:calc(100dvh - 68px);background:var(--surface);padding:24px 16px}
+.admin-content{min-width:0;max-width:none;margin:0;padding:36px clamp(20px,4vw,56px)}
+.admin-title h1{margin:0;font-size:clamp(26px,3vw,34px);letter-spacing:-.04em}
+.admin-nav button{font-weight:600;transition:background .15s,color .15s}
+.admin-nav button:hover{background:var(--surface-2);color:var(--text)}
+@media(max-width:760px){.admin-shell{grid-template-columns:1fr}.admin-nav{min-height:auto;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--line)}.admin-content{padding:24px 18px}}
