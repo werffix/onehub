@@ -9,8 +9,8 @@
 
 /* Split-screen login built around the supplied artwork. */
 :root{--font-ui:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-reader:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--radius-sm:5px;--radius:8px;--radius-lg:10px}
-.login{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;padding:0;background:var(--bg)}
-.login-visual{position:relative;min-height:100dvh;background:#160607 url('/login-art.png') center/100% 100% no-repeat;display:flex;align-items:flex-start;padding:38px 48px}
+.login{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;place-items:stretch;padding:0;background:var(--bg)}
+.login-visual{position:relative;width:100%;height:100dvh;min-height:100dvh;background:#160607 url('/login-art.png') center/cover no-repeat;display:flex;align-items:flex-start;padding:38px 48px}
 .login-brand{color:#fff;font-size:25px;font-weight:800;letter-spacing:-1.4px;line-height:1}
 .login-brand span{color:#ff3b43}
 .login-credit{position:absolute;left:48px;bottom:32px;color:#ffffffa8;font-size:11px;font-weight:400;letter-spacing:.14em}
@@ -21,4 +21,4 @@
 .login-panel input{margin:0 0 16px;border-radius:5px;padding:15px 16px}
 .login-panel .primary{border-radius:5px;padding:14px 16px}
 .category-card,.search,.article-content img,.article-content pre,.copy-link,.primary,.account-menu,.account-menu button,.admin-nav button,.category-form input,.properties input,.properties textarea,.properties select,.editor-head>button,.editor-toolbar button,.tool-upload,.editor-toolbar select,.admin-row button,.admin-row a,.admin-tabs button,.article-filters select,.editor-toolbar input[type=number],.editor-toolbar input[type=color],.user-details,.user-details>button,.upload-placeholder{border-radius:var(--radius-sm)}
-@media(max-width:700px){.login{grid-template-columns:1fr;grid-template-rows:38dvh 1fr}.login-visual{min-height:38dvh;padding:25px 24px}.login-brand{font-size:22px}.login-credit{left:24px;bottom:18px}.login-form-side{min-height:62dvh;padding:36px 24px;align-items:start}.login-panel{width:min(430px,100%);margin:auto 0}.login-panel h1{font-size:29px}}
+@media(max-width:700px){.login{grid-template-columns:1fr;grid-template-rows:38dvh 1fr}.login-visual{height:38dvh;min-height:38dvh;padding:25px 24px}.login-brand{font-size:22px}.login-credit{left:24px;bottom:18px}.login-form-side{min-height:62dvh;padding:36px 24px;align-items:start}.login-panel{width:min(430px,100%);margin:auto 0}.login-panel h1{font-size:29px}}
