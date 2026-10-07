@@ -138,3 +138,26 @@ html[data-theme="light"] .article-cover.c3{background:linear-gradient(135deg,#f8
 @media(max-width:600px){.topbar{margin-bottom:15px}.header-actions{width:100%;flex-wrap:wrap}.welcome-home{min-height:calc(100vh - 130px);padding:25px 5px 70px}.welcome-home h1{font-size:38px}.story-actions{gap:8px}.story-layout .story-card{padding:22px}.category-filter{flex:1;min-width:150px}.modal.large{padding:16px}.account-menu{right:0}}
 .modal .detail-item,.modal .key-box{background:#f6f6f7;color:#1d1d1f}
 @media(max-width:940px){.overlay:has(.modal.large){left:70px}#app:has(.overlay .modal.large) .sidebar{width:70px;transform:translateX(0);padding:20px 8px}#app:has(.overlay .modal.large) .sidebar .brand{justify-content:center;padding:0;margin-bottom:28px;font-size:0}#app:has(.overlay .modal.large) .sidebar .brand::after{content:'oh';font-size:17px;letter-spacing:-.5px}#app:has(.overlay .modal.large) .sidebar .menu-label{display:none}#app:has(.overlay .modal.large) .sidebar .menu-item{justify-content:center;padding:0;font-size:0}#app:has(.overlay .modal.large) .sidebar .menu-item svg{width:19px;height:19px}}
+
+/* Separate header layer; the user view has no sidebar. */
+.site-header{position:fixed;z-index:30;inset:0 0 auto;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;background:#121214ed;border-bottom:1px solid var(--border);backdrop-filter:blur(18px)}
+html[data-theme="light"] .site-header{background:#fffffff0}
+.brand-button{padding:0;border:0;background:transparent;color:var(--text)}
+.site-header .brand{margin:0;padding:0;font-size:21px;letter-spacing:-1px}
+.site-header .brand-slashes{color:#e52b32!important;padding:0 3px}
+.sidebar{top:72px;inset-inline-start:0;height:calc(100vh - 72px);padding-top:25px}
+.main{padding-top:96px}
+#app.user-mode .main{margin-left:0;padding:96px 56px 60px}
+#app.user-mode .container{max-width:1200px}
+.account-trigger{gap:10px;padding:0;border:0;border-radius:0;background:transparent}
+.account-trigger .avatar{width:40px;height:40px;border-radius:11px;background:#29292d;color:#fff}
+.account-arrow{padding:0;color:#aaaab0}
+.account-wrap{margin-left:auto}
+.welcome-home{position:relative;isolation:isolate;min-height:calc(100vh - 168px);align-items:center;justify-content:center;text-align:center;padding:0 24px 55px}
+.welcome-home::before{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:min(58vw,620px);height:min(58vw,620px);transform:translate(-50%,-52%);border-radius:50%;background:radial-gradient(circle,#c51f2b42 0%,#a7192226 36%,#76131a0e 62%,transparent 74%);filter:blur(45px);pointer-events:none}
+.welcome-home h1{font-size:clamp(36px,5vw,60px);font-weight:650;letter-spacing:-.055em}
+.welcome-home p{margin:14px 0 26px;font-size:15px}
+.welcome-home .primary{padding:14px 18px}
+#app.user-mode .story-layout{max-width:950px}
+@media(max-width:940px){.site-header{padding:0 22px}.sidebar{top:72px;height:calc(100vh - 72px)}.main{padding-top:96px}#app.user-mode .main{padding:96px 24px 50px}.overlay:has(.modal.large){inset:72px 0 0 70px}}
+@media(max-width:600px){.site-header{height:64px;padding:0 17px}.site-header .brand{font-size:19px}.sidebar{top:64px;height:calc(100vh - 64px)}.main,#app.user-mode .main{padding-top:82px}.welcome-home{min-height:calc(100vh - 125px);padding:0 12px 35px}.welcome-home h1{font-size:clamp(32px,9vw,44px)}.welcome-home p{font-size:14px}.welcome-home::before{width:90vw;height:90vw;filter:blur(34px)}.overlay:has(.modal.large){inset:64px 0 0 70px}}
