@@ -15,13 +15,13 @@ caddy version
 
 ## 2. Разместите приложение
 
-Скопируйте содержимое проекта на сервер в `/opt/0ne-hub` (например, через `git clone` или `rsync`). В каталоге проекта должны лежать `server.js`, `package.json` и папка `public/`.
+Скопируйте содержимое проекта на сервер в `/opt/onehub` (например, через `git clone` или `rsync`). В каталоге проекта должны лежать `server.js`, `package.json` и папка `public/`.
 
 Создайте системного пользователя и назначьте ему каталог приложения:
 
 ```sh
-sudo useradd --system --home /opt/0ne-hub --shell /usr/sbin/nologin onehub
-sudo chown -R onehub:onehub /opt/0ne-hub
+sudo useradd --system --home /opt/onehub --shell /usr/sbin/nologin onehub
+sudo chown -R onehub:onehub /opt/onehub
 ```
 
 Если пользователь уже создан, пропустите `useradd`. `npm install` можно выполнить в каталоге проекта; сторонних runtime-пакетов у приложения сейчас нет.
@@ -65,7 +65,7 @@ SESSION_SECRET=ВСТАВЬТЕ_ТРЕТИЙ_СЕКРЕТ
 Скопируйте unit-файл из `deploy/0ne-hub.service` в systemd:
 
 ```sh
-sudo cp /opt/0ne-hub/deploy/0ne-hub.service /etc/systemd/system/0ne-hub.service
+sudo cp /opt/onehub/deploy/0ne-hub.service /etc/systemd/system/0ne-hub.service
 command -v node
 ```
 
@@ -96,7 +96,7 @@ curl -i http://127.0.0.1:3000/api/session
 Скопируйте пример конфигурации и замените `example.com` на домен, DNS которого указывает на этот сервер:
 
 ```sh
-sudo cp /opt/0ne-hub/deploy/Caddyfile.example /etc/caddy/Caddyfile
+sudo cp /opt/onehub/deploy/Caddyfile.example /etc/caddy/Caddyfile
 sudoedit /etc/caddy/Caddyfile
 ```
 
