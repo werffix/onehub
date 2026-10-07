@@ -7,7 +7,7 @@ function loadEnv() {
   try { for (const line of fs.readFileSync('.env', 'utf8').split(/\r?\n/)) { const m=line.match(/^\s*([A-Z_]+)\s*=\s*(.*?)\s*$/); if(m&&!process.env[m[1]]) process.env[m[1]]=m[2].replace(/^['"]|['"]$/g,''); } } catch {}
 }
 loadEnv();
-const PORT = Number(process.env.PORT || 3000), PROD = process.env.NODE_ENV === 'production';
+const PORT = Number(process.env.PORT || 3000), HOST = process.env.HOST || '127.0.0.1', PROD = process.env.NODE_ENV === 'production';
 const keyRe = /^(?!.*[O01I])[A-HJ-NP-Z2-9]{4}(?:-[A-HJ-NP-Z2-9]{4}){3}$/;
 const adminKey=process.env.ADMIN_KEY || '', required=['KEY_ENCRYPTION_SECRET','KEY_LOOKUP_SECRET','SESSION_SECRET'];
 if(!keyRe.test(adminKey) || adminKey==='ABCD-EFGH-JKLM-NPQR') throw new Error('ADMIN_KEY отсутствует, имеет неверный формат или совпадает с шаблоном. Настройте .env.');
@@ -63,7 +63,7 @@ if(!device){device={id:id(),userId:user.id,tokenHash:digest(deviceRaw),ua:ua(req
 if(!valid){attempts.count++;attempts.until=attempts.count>=5?Date.now()+Math.min(60000,attempts.count*5000):0;fails.set(address,attempts);db.logins.unshift({id:id(),userId:user?.id||null,ip:address,ua:ua(req),success:false,at:new Date().toISOString()});log('Неудачный вход','неизвестно',address);await new Promise(r=>setTimeout(r,250));return fail(res,401,'Не удалось выполнить вход. Проверьте ключ или обратитесь к администратору.')}
 fails.delete(address);const sid=id(),csrf=crypto.randomBytes(24).toString('hex');db.sessions=db.sessions.filter(x=>x.id!==s?.id);db.sessions.push({id:sid,role:adminMatch?'admin':'user',userId:user?.id,csrf,created:Date.now(),expires:Date.now()+12*60*60*1000});db.logins.unshift({id:id(),userId:user?.id||'admin',ip:address,ua:ua(req),success:true,at:new Date().toISOString()});log('Вход',adminMatch?'Администратор':user.name,address);save();const cookies=[authCookie(sid)];if(deviceRaw&&!cookie(req,'oh_device'))cookies.unshift(deviceCookie(deviceRaw));return send(res,200,{user:adminMatch?{id:'admin',name:'Администратор',role:'admin'}:{id:user.id,name:user.name,role:'user'},csrf},{'set-cookie':cookies})}
 if(s?.role==='user'&&(!me||me.blocked)){db.sessions=db.sessions.filter(x=>x.id!==s.id);save();return fail(res,401,'Доступ закрыт. Обратитесь к администратору.')}
-if(route.startsWith('/api/')&&!s)return fail(res,401,'Требуется вход.');
+if((route==='/api'||route.startsWith('/api/'))&&!s)return fail(res,401,'Требуется вход.');
 if(route.startsWith('/api/')&&req.method!=='GET'&&!csrfOk(req,s))return fail(res,403,'Сеанс устарел. Обновите страницу.');
 if(req.method==='POST'&&route==='/api/logout'){db.sessions=db.sessions.filter(x=>x.id!==s.id);save();return send(res,200,{ok:true},{'set-cookie':'oh_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'})}
 if(req.method==='POST'&&route==='/api/logout-all'){if(s.role!=='admin')db.sessions=db.sessions.filter(x=>x.userId!==s.userId);else db.sessions=db.sessions.filter(x=>x.role!=='admin');save();return send(res,200,{ok:true},{'set-cookie':'oh_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'})}
@@ -85,4 +85,4 @@ if(route.startsWith('/api/'))return fail(res,404,'Не найдено.');
 const file=route==='/'?'index.html':path.basename(route);const allowed=['index.html','app.js','style.css','robots.txt'];if(!allowed.includes(file))return fail(res,404,'Не найдено.');const fp=path.join(__dirname,'public',file);return send(res,200,fs.readFileSync(fp),{'content-type':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.txt')?'text/plain; charset=utf-8':'text/html; charset=utf-8','x-robots-tag':'noindex, nofollow'});
 }catch(e){console.error('request error:',e.message);return fail(res,500,PROD?'Внутренняя ошибка.':'Ошибка запроса: '+e.message)}
 });
-server.listen(PORT, '127.0.0.1', () => console.log(`0ne//hub запущен: http://127.0.0.1:${PORT}`));
+server.listen(PORT,HOST,()=>console.log(`0ne//hub запущен: http://${HOST}:${PORT}`));
