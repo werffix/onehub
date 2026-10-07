@@ -1,146 +1,75 @@
-# Развёртывание 0ne//hub с Caddy
+# Деплой one//hub на Ubuntu/Debian с Caddy
 
-Ниже — пример для отдельного Ubuntu/Debian сервера с публичным IP. Приложение слушает только loopback `127.0.0.1:3000`; Caddy принимает HTTPS извне и проксирует запросы локально. Команды с `sudo` выполняются в SSH-сессии на сервере.
+Эта версия требует Node.js 20+ и production-сборки Vite. Caddy завершает HTTPS и проксирует запросы на Node, который слушает только `127.0.0.1:3000`.
 
-## 1. Подготовьте домен и сервер
+## Установка и обновление
 
-У домена создайте DNS-запись `A`, указывающую на IPv4 сервера. Добавляйте `AAAA` только если IPv6 на сервере действительно настроен и доступен. Откройте входящие TCP-порты `80` и `443` в firewall сервера и панели хостинга; порт приложения `3000` наружу не открывайте. Caddy использует эти порты для HTTP/HTTPS и автоматического сертификата. [Документация Caddy: HTTPS](https://caddyserver.com/docs/quick-starts/https).
-
-Установите Node.js версии 20 или новее и Caddy по инструкции для вашей версии ОС из [официальной документации Caddy](https://caddyserver.com/docs/install). Проверьте:
+Настройте DNS `A` на адрес сервера; откройте входящие TCP 80/443. Установите Node.js 20+ и Caddy по официальным инструкциям. Разместите репозиторий в `/opt/onehub`, затем установите зависимости и соберите UI:
 
 ```sh
-node --version
-caddy version
+cd /opt/onehub
+npm ci
+npm run build
 ```
 
-## 2. Разместите приложение
-
-Скопируйте содержимое проекта на сервер в `/opt/onehub` (например, через `git clone` или `rsync`). В каталоге проекта должны лежать `server.js`, `package.json` и папка `public/`.
-
-Создайте системного пользователя и назначьте ему каталог приложения:
+Если директория уже обслуживается, остановите службу перед обновлением. До миграции сохраните backup данных:
 
 ```sh
-sudo useradd --system --home /opt/onehub --shell /usr/sbin/nologin onehub
-sudo chown -R onehub:onehub /opt/onehub
+sudo systemctl stop 0ne-hub
+sudo cp -a /var/lib/0ne-hub /var/lib/0ne-hub.backup.$(date +%Y%m%d-%H%M%S)
 ```
 
-Если пользователь уже создан, пропустите `useradd`. `npm install` можно выполнить в каталоге проекта; сторонних runtime-пакетов у приложения сейчас нет.
-
-## 3. Задайте секреты
-
-Сгенерируйте четыре значения локально на сервере. Не публикуйте вывод команд и не помещайте секреты в Git или Caddyfile.
+Запустите миграцию от имени сервиса на том же каталоге, который задан в `DATA_DIR`:
 
 ```sh
-node -e "const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';const b=require('crypto').randomBytes(16);console.log([...b].map(x=>c[x%c.length]).join('').match(/.{4}/g).join('-'))"
-openssl rand -hex 32
-openssl rand -hex 32
-openssl rand -hex 32
+sudo -u onehub env DATA_DIR=/var/lib/0ne-hub npm --prefix /opt/onehub run migrate:kb
 ```
 
-Первая команда печатает ключ администратора; следующие три — независимые секреты шифрования, поиска ключей и подписи сессий. Создайте защищённый environment-файл:
+Команда сохраняет пользователей, ключи, устройства и сессии; для обновления статьи переносит/санитизирует старый HTML. Выполнить один раз при первом обновлении. Скрипт идемпотентный.
+
+## Секреты и systemd
+
+`/etc/0ne-hub.env` должен быть владельца root, режим `600`. В нём задайте `NODE_ENV=production`, `HOST=127.0.0.1`, `PORT=3000`, `DATA_DIR=/var/lib/0ne-hub`, `TRUST_PROXY=true`, уникальный `ADMIN_KEY` и три независимых секрета длиной не менее 32 символов (`KEY_ENCRYPTION_SECRET`, `KEY_LOOKUP_SECRET`, `SESSION_SECRET`). Не меняйте эти секреты после появления данных: они нужны для ключей и сессий.
 
 ```sh
 sudo install -o root -g root -m 600 /dev/null /etc/0ne-hub.env
 sudoedit /etc/0ne-hub.env
-```
-
-Если вы уже настроили `/opt/onehub/.env`, установите его в путь, который указан в systemd unit:
-
-```sh
-sudo install -o root -g root -m 600 /opt/onehub/.env /etc/0ne-hub.env
-```
-
-Unit-файл читает `/etc/0ne-hub.env`, а не `.env` из папки проекта. В `DATA_DIR` приложение хранит `store.json`, отдельные HTML-файлы статей (`articles/`) и загруженные изображения (`uploads/`). Эти каталоги доступны для записи systemd-службе через `/var/lib/0ne-hub` и попадают в резервную копию данных.
-
-Вставьте туда сгенерированные значения, заменив домен здесь и далее на свой:
-
-```dotenv
-NODE_ENV=production
-HOST=127.0.0.1
-PORT=3000
-TRUST_PROXY=true
-DATA_DIR=/var/lib/0ne-hub
-ADMIN_KEY=ВСТАВЬТЕ_СГЕНЕРИРОВАННЫЙ_КЛЮЧ
-KEY_ENCRYPTION_SECRET=ВСТАВЬТЕ_ПЕРВЫЙ_СЕКРЕТ
-KEY_LOOKUP_SECRET=ВСТАВЬТЕ_ВТОРОЙ_СЕКРЕТ
-SESSION_SECRET=ВСТАВЬТЕ_ТРЕТИЙ_СЕКРЕТ
-```
-
-Не оставляйте примерные значения из `.env.example`: приложение намеренно откажется запускаться с ними. `TRUST_PROXY=true` безопасен в этой схеме, потому что Node.js доступен только на loopback, а Caddy очищает/переустанавливает forwarded-заголовки по умолчанию. Не выставляйте порт Node наружу при включённом доверии к заголовку IP. [Документация Caddy: reverse_proxy и X-Forwarded-*](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy).
-
-## 4. Настройте systemd
-
-Скопируйте unit-файл из `deploy/0ne-hub.service` в systemd:
-
-```sh
 sudo cp /opt/onehub/deploy/0ne-hub.service /etc/systemd/system/0ne-hub.service
-command -v node
-```
-
-Если `command -v node` вернул путь, отличный от `/usr/bin/node`, отредактируйте `ExecStart` в `/etc/systemd/system/0ne-hub.service` и укажите фактический путь. Systemd unit создаёт `/var/lib/0ne-hub` для данных приложения. Затем включите службу:
-
-```sh
 sudo systemctl daemon-reload
 sudo systemctl enable --now 0ne-hub
-sudo systemctl status 0ne-hub
-```
-
-Проверить журнал:
-
-```sh
-sudo journalctl -u 0ne-hub -n 100 --no-pager
-```
-
-Проверить локальный upstream:
-
-```sh
+sudo systemctl status 0ne-hub --no-pager -l
 curl -i http://127.0.0.1:3000/api/session
 ```
 
-Ответ `200` подтверждает, что процесс приложения поднялся.
+Если `command -v node` не выводит `/usr/bin/node`, исправьте путь `ExecStart` в unit. Сборка `dist/` должна быть готова до старта сервиса. Unit уже задаёт `ReadWritePaths=/var/lib/0ne-hub`.
 
-## 5. Настройте Caddy для домена
+## Caddy
 
-Скопируйте пример конфигурации и замените `example.com` на домен, DNS которого указывает на этот сервер:
-
-```sh
-sudo cp /opt/onehub/deploy/Caddyfile.example /etc/caddy/Caddyfile
-sudoedit /etc/caddy/Caddyfile
-```
-
-Итоговая конфигурация должна выглядеть так:
+Установите Caddy, укажите свой домен в `/etc/caddy/Caddyfile`:
 
 ```caddyfile
-hub.example.org {
-	encode zstd gzip
-	reverse_proxy 127.0.0.1:3000
+kb.example.org {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:3000
 }
 ```
 
-Проверьте и примените конфигурацию:
+Примените:
 
 ```sh
 sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
-sudo systemctl status caddy
+sudo systemctl status caddy --no-pager
 ```
 
-Caddy автоматически запросит и будет обновлять TLS-сертификат, а также перенаправит HTTP на HTTPS при доступных DNS и портах. [Документация Caddy: Automatic HTTPS](https://caddyserver.com/docs/automatic-https).
+Caddy получит TLS сертификат автоматически при доступных DNS и портах 80/443. Порт Node наружу не открывайте.
 
-Откройте `https://ваш-домен`. Войдите по `ADMIN_KEY`, добавьте пользователей и статьи через интерфейс администратора.
-
-## 6. Обновление приложения
-
-Сделайте резервную копию данных, обновите файлы проекта, затем перезапустите сервис. В резервную копию `/var/lib/0ne-hub` входят JSON-база, отдельные HTML-файлы статей и загруженные фотографии:
+## Диагностика и повторный деплой
 
 ```sh
-sudo tar -czf /root/0ne-hub-data-$(date +%F-%H%M).tar.gz /var/lib/0ne-hub
-sudo systemctl restart 0ne-hub
-sudo systemctl status 0ne-hub
+sudo journalctl -u 0ne-hub -n 100 --no-pager
+sudo ss -ltnp | grep ':3000'
+curl -i https://ваш-домен/api/session
 ```
 
-При обновлении не перезаписывайте `/etc/0ne-hub.env`. Храните резервные копии отдельно от сервера и регулярно проверяйте восстановление. Потеря `KEY_ENCRYPTION_SECRET` сделает сохранённые ключи пользователей нечитаемыми; потеря `KEY_LOOKUP_SECRET` также потребует выдать пользователям новые ключи.
-
-## Эксплуатационные ограничения
-
-Хранилище сейчас представляет собой JSON-файл, а rate limit живёт в памяти процесса. Используйте один экземпляр приложения и настройте регулярное резервное копирование. Для высокой нагрузки или критичных данных сначала перенесите хранение на транзакционную БД и распределённое хранилище ограничений. Не запускайте несколько копий сервиса на общем JSON-файле.
+Обновление: `git pull --ff-only`, `npm ci`, `npm run build`, затем `sudo systemctl restart 0ne-hub`. Не затирайте `/var/lib/0ne-hub` и не запускайте `git clean` по каталогу данных.
