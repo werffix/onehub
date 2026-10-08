@@ -6,9 +6,15 @@ export async function enhanceCodeBlocks(root: HTMLElement, light: boolean) {
   root.querySelectorAll<HTMLElement>('pre').forEach(pre => {
     const code = pre.querySelector<HTMLElement>('code');
     if (!code) return;
-    hljs.default.highlightElement(code);
 
-    let bar = pre.querySelector<HTMLElement>(':scope > .code-toolbar');
+    let frame = pre.parentElement?.classList.contains('code-frame') ? pre.parentElement : null;
+    let bar = frame?.querySelector<HTMLElement>(':scope > .code-toolbar');
+    if (!frame) {
+      frame = document.createElement('div');
+      frame.className = 'code-frame';
+      pre.replaceWith(frame);
+      frame.appendChild(pre);
+    }
     if (!bar) {
       bar = document.createElement('div');
       bar.className = 'code-toolbar';
@@ -26,7 +32,8 @@ export async function enhanceCodeBlocks(root: HTMLElement, light: boolean) {
         window.setTimeout(() => { button.textContent = 'Копировать'; }, 1500);
       };
       bar.append(label, button);
-      pre.prepend(bar);
+      frame.prepend(bar);
     }
+    hljs.default.highlightElement(code);
   });
 }

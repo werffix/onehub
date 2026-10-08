@@ -93,3 +93,23 @@
 :root[data-theme=light] .hljs-comment,:root[data-theme=light] .hljs-quote{color:#6e7781}
 :root[data-theme=light] .hljs-keyword,:root[data-theme=light] .hljs-selector-tag,:root[data-theme=light] .hljs-literal{color:#cf222e}
 :root[data-theme=light] .hljs-string,:root[data-theme=light] .hljs-title,:root[data-theme=light] .hljs-section{color:#116329}
+
+
+/* Compact documentation tables styled like the reference. */
+.article-content table,.edit-body table{width:100%;border:1px solid var(--line);border-radius:12px;border-collapse:separate;border-spacing:0;table-layout:fixed;overflow:hidden;background:color-mix(in srgb,var(--surface) 44%,transparent);font-size:14px;line-height:1.5}
+.article-content th,.article-content td,.edit-body th,.edit-body td{min-width:0;padding:11px 14px;border:0;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;overflow-wrap:anywhere}
+.article-content th,.edit-body th{background:color-mix(in srgb,var(--surface-2) 76%,transparent);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.075em;text-transform:uppercase}
+.article-content tr:last-child td,.edit-body tr:last-child td{border-bottom:0}
+.article-content th+th,.article-content td+td,.edit-body th+th,.edit-body td+td{border-left:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.article-content th:first-child,.article-content td:first-child,.edit-body th:first-child,.edit-body td:first-child{width:15%}
+.article-content th:nth-child(2),.article-content td:nth-child(2),.edit-body th:nth-child(2),.edit-body td:nth-child(2){width:33%}
+.code-frame{margin:18px 0;overflow:hidden;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.article-content .code-frame pre{position:static;margin:0!important;padding:0!important;overflow:auto;border:0!important;border-radius:0!important;background:var(--surface-2)!important;color:var(--text)!important}
+.article-content .code-frame pre>code{display:block;padding:12px 14px;background:transparent;color:var(--text);font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;overflow:auto}
+.article-content .code-frame .code-toolbar{position:relative;top:auto;right:auto;z-index:1}
+.article-content .code-frame .code-copy{position:static;margin:0;padding:5px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--text);font:500 11px/1.2 var(--font-ui)}
+.article-content .code-frame .code-copy:hover{border-color:var(--accent)}
+:root[data-theme=light] .article-content .code-frame,:root[data-theme=light] .article-content .code-frame pre{background:#f1f1f4!important;color:#28282d!important;border-color:#d9d9df!important}
+:root[data-theme=light] .article-content .code-frame pre>code{color:#28282d}
+.html-import-label input{display:block;width:100%;margin-top:8px;color:var(--muted);font-size:12px}
+.html-import-label small{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.4}
